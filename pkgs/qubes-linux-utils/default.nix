@@ -65,6 +65,10 @@ stdenv.mkDerivation rec {
 
     substituteInPlace "$out/lib/udev/rules.d/99-qubes-usb.rules" --replace '/usr/lib/qubes/' "$out/lib/qubes/"
     substituteInPlace "$out/lib/udev/rules.d/99-qubes-block.rules" --replace '/usr/lib/qubes/' "$out/lib/qubes/"
+
+    mv "$out/usr/lib/systemd" "$out/lib/systemd"
+
+    rm -rf "$out/usr"
   '';
 
   meta = with lib; {

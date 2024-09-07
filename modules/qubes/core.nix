@@ -101,21 +101,33 @@ with lib; {
       security.wrappers.qfile-unpacker = {
         owner = "root";
         group = "root";
-        source = "${pkgs.qubes-core-agent-linux}/bin/qfile-unpacker";
+        source = "${qubes-core-agent-linux}/bin/qfile-unpacker";
         setuid = true;
       };
 
+      # adding to system packages will cause their xdg autostart files to be picked up
+      environment.systemPackages = [
+        qubes-core-agent-linux
+      ];
       services.udev.packages = [
         pkgs.qubes-linux-utils
         qubes-core-agent-linux
       ];
       systemd.packages = [
+        pkgs.qubes-linux-utils
         qubes-core-agent-linux
       ];
-      # adding to system packages will cause their xdg autostart files to be picked up
-      environment.systemPackages = [
-        pkgs.qubes-core-agent-linux
-      ];
+
+      # on other distros this is added on install of the package,
+      # rather than create another module we just include in core
+      systemd.services.qubes-meminfo-writer = {
+        # ensure the service is started on boot, since Install is ignored
+        wantedBy = ["multi-user.target"];
+
+        serviceConfig = {
+          ExecStart = ["" "${pkgs.qubes-linux-utils}/bin/meminfo-writer 30000 100000 /run/meminfo-writer.pid"];
+        };
+      };
 
       systemd.services.qubes-early-vm-config = {
         # ensure the service is started on boot, since Install is ignored
