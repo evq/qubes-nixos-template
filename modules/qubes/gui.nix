@@ -29,7 +29,7 @@ in
       ];
 
       services.xserver.displayManager.startx.enable = true;
-      environment.etc."X11/Xsession".source = config.services.xserver.displayManager.sessionData.wrapper;
+      environment.etc."X11/Xsession".source = config.services.displayManager.sessionData.wrapper;
       services.xserver.displayManager.sessionCommands = ''
         if [ -d ${pkgs.qubes-gui-agent-linux}/etc/X11/xinit/xinitrc.d ] ; then
          for f in ${pkgs.qubes-gui-agent-linux}/etc/X11/xinit/xinitrc.d/?*.sh ; do

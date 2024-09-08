@@ -44,6 +44,10 @@ with lib; {
       services.getty.autologinUser = "user";
 
       fileSystems = {
+        "/" = {
+          device = "/dev/xvda1";
+          fsType = "ext4";
+        };
         "/proc/xen" = {
           device = "xen";
           fsType = "xenfs";

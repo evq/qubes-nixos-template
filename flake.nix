@@ -5,10 +5,14 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
-  outputs = {nixpkgs, ...}: let
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  }: let
     lib = nixpkgs.lib;
     system = "x86_64-linux";
-    localPackages = final: prev: {
+    qubesPackages = final: prev: {
       qubes-core-qubesdb = prev.callPackage ./pkgs/qubes-core-qubesdb {};
       qubes-core-vchan-xen = prev.callPackage ./pkgs/qubes-core-vchan-xen {};
       qubes-core-qrexec = prev.callPackage ./pkgs/qubes-core-qrexec {};
@@ -22,23 +26,49 @@
     pkgs = import nixpkgs {
       inherit system;
       overlays = [
-        localPackages
-      ];
-    };
-    nixos = lib.nixosSystem {
-      inherit pkgs system;
-      modules = [
-        ./configuration.nix
+        qubesPackages
       ];
     };
   in {
-    inherit pkgs;
-    nixosConfigurations = {
-      nixos = nixos;
+    overlays.default = qubesPackages;
+    nixosModules.default = {
+      config,
+      lib,
+      pkgs,
+      ...
+    }: {
+      imports = [
+        ./modules/qubes/core.nix
+        ./modules/qubes/db.nix
+        ./modules/qubes/gui.nix
+        ./modules/qubes/networking.nix
+        ./modules/qubes/qrexec.nix
+        ./modules/qubes/sshd.nix
+      ];
+    };
+    nixosProfiles.default = {
+      config,
+      lib,
+      pkgs,
+      ...
+    }: {
+      imports = [
+        ./profiles/qubes.nix
+      ];
     };
     rpm = pkgs.callPackage ./tools/rpm.nix {
       inherit nixpkgs;
-      nixosConfig = nixos.config;
+      nixosConfig =
+        lib.nixosSystem
+        {
+          inherit pkgs system;
+          modules = [
+            self.nixosModules.default
+            self.nixosProfiles.default
+            #./configuration.nix
+          ];
+        }
+        .config;
     };
   };
 }
