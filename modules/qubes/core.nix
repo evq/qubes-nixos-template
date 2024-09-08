@@ -181,9 +181,6 @@ with lib; {
         };
       };
 
-      #systemd.services.qubes-update-check = {
-      # TODO how to setup the timer?
-
       #systemd.services.qubes-updates-proxy-forwarder@ = {
 
       systemd.services.xendriverdomain = {

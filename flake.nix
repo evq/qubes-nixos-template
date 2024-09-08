@@ -44,6 +44,7 @@
         ./modules/qubes/networking.nix
         ./modules/qubes/qrexec.nix
         ./modules/qubes/sshd.nix
+        ./modules/qubes/updates.nix
       ];
     };
     nixosProfiles.default = {

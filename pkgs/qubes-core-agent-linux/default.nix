@@ -229,9 +229,8 @@ in
         # mkdir -p -m 0755 "$out/etc/pacman.d"
         # install -m 644 "archlinux/PKGBUILD-qubes-pacman-options.conf" "$out/etc/pacman.d/10-qubes-options.conf"
 
-        # Install upgrade check scripts
-        # install -m 0755 "package-managers/upgrades-installed-check" "$out/usr/lib/qubes/"
-        # install -m 0755 "package-managers/upgrades-status-notify" "$out/usr/lib/qubes/"
+        # remove the default update definition since we replace it
+        rm "$out/etc/qubes-rpc/qubes.InstallUpdatesGUI"
 
         mv "$out/usr/share" "$out/share"
         mv "$out/etc/systemd/system/xendriverdomain.service" "$out/lib/systemd/system/"

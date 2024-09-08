@@ -8,6 +8,8 @@
   services.qubes.gui.enable = true;
   services.qubes.networking.enable = true;
 
+  fonts.enableDefaultPackages = true;
+
   # When running in PVH mode, the qubes init script will bind mount the kernel modules here
   systemd.tmpfiles.rules = [
     "d /lib/modules 0755 root root"
