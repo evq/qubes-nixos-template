@@ -40,6 +40,9 @@ with lib; {
         uid = 1000;
       };
       security.sudo.wheelNeedsPassword = false;
+      security.pam.services.su.text = lib.mkDefault (lib.mkBefore ''
+        auth sufficient ${pkgs.linux-pam}/lib/security/pam_succeed_if.so use_uid user ingroup qubes
+      '');
       # ensure qvm-console-dispvm is logged in
       services.getty.autologinUser = "user";
 
