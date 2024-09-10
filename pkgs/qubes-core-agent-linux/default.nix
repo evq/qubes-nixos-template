@@ -66,6 +66,7 @@
     scripts_using_functions
     ++ [
       "etc/qubes-rpc/qubes.Filecopy"
+      "etc/qubes-rpc/qubes.VMExec"
       "etc/qubes-rpc/qubes.VMShell"
       "etc/qubes-rpc/qubes.WaitForSession"
       "lib/qubes/init/functions"
@@ -232,9 +233,11 @@ in
         # remove the default update definition since we replace it
         rm "$out/etc/qubes-rpc/qubes.InstallUpdatesGUI"
 
+        mv "$out/usr/bin/qubes-vmexec" "$out/bin/"
         mv "$out/usr/share" "$out/share"
         mv "$out/etc/systemd/system/xendriverdomain.service" "$out/lib/systemd/system/"
 
+        rm -rf "$out/usr/bin"
         rm -rf "$out/var/run"
       ''
       + lib.optionalString (!enableNetworking) ''
@@ -287,6 +290,7 @@ in
           ++ lib.optional (!enableNetworking) "ip";
         fix = {
           "/bin/bash" = true;
+          "/usr/bin/qubes-vmexec" = true;
           "/usr/bin/qubesdb-read" = true;
           "/usr/lib/qubes/init/bind-dirs.sh" = true;
           "/usr/lib/qubes/init/setup-rw.sh" = true;
@@ -302,6 +306,7 @@ in
         };
         inputs =
           [
+            "bin"
             "lib/qubes"
             "lib/qubes/init"
             "${qubes-core-qrexec}/lib/qubes"
@@ -347,6 +352,7 @@ in
             "cannot:${networkmanager}/bin/nmcli"
             "cannot:${systemd}/bin/systemctl"
             "cannot:${systemd}/bin/udevadm"
+            "cannot:bin/qubes-vmexec"
             "cannot:lib/qubes/init/bind-dirs.sh"
             "cannot:lib/qubes/qfile-unpacker"
           ]
