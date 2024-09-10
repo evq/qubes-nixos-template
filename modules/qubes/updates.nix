@@ -72,6 +72,18 @@ with lib; {
         '';
 
         installUpdates = pkgs.writeTextFile {
+          name = "qubes-rpc-installupdates";
+          text = ''
+            #!${pkgs.stdenv.shell}
+            ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags} | tee /var/log/qubes/qubes-update
+
+            # Notify dom0 about installed updates
+            ${pkgs.systemd}/bin/systemctl start qubes-update-check
+          '';
+          executable = true;
+          destination = "/etc/qubes-rpc/qubes.InstallUpdates";
+        };
+        installUpdatesGui = pkgs.writeTextFile {
           name = "qubes-rpc-installupdatesgui";
           text = ''
             #!${pkgs.stdenv.shell}
@@ -86,7 +98,7 @@ with lib; {
           destination = "/etc/qubes-rpc/qubes.InstallUpdatesGUI";
         };
       in {
-        services.qubes.qrexec.packages = [installUpdates];
+        services.qubes.qrexec.packages = [installUpdates installUpdatesGui];
         systemd.services.qubes-update-check = {
           serviceConfig = {
             ExecStart = ["" "${checkUpdatesScript}/bin/upgrades-status-notify started-by-init"];
