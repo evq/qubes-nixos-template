@@ -8,7 +8,7 @@
   pkg-config,
   python3Packages,
   qubes-core-vchan-xen,
-  xenPackages,
+  xen,
 }:
 stdenv.mkDerivation rec {
   version = "4.3.3";
@@ -26,7 +26,7 @@ stdenv.mkDerivation rec {
       icu
       pkg-config
       qubes-core-vchan-xen
-      xenPackages.xen_4_17-slim
+      xen
     ]
     ++ (with python3Packages; [
       distutils

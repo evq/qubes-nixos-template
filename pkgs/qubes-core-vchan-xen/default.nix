@@ -2,7 +2,7 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  xenPackages,
+  xen,
 }:
 stdenv.mkDerivation rec {
   pname = "qubes-core-vchan-xen";
@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
     hash = "sha256-O7i5zK7S+d/O8oPMvm6szNR1Xq6qSBNE2+uFI/1mDEg=";
   };
 
-  buildInputs = [xenPackages.xen_4_17-slim];
+  buildInputs = [xen];
 
   buildPhase = ''
     make all PREFIX=/ LIBDIR="$out/lib" INCLUDEDIR="$out/include"
@@ -24,6 +24,8 @@ stdenv.mkDerivation rec {
   installPhase = ''
     make install DESTDIR=$out PREFIX=/
   '';
+
+  env.CFLAGS = "-DHAVE_XC_DOMAIN_GETINFO_SINGLE";
 
   meta = with lib; {
     description = "Libraries required for the higher-level Qubes daemons and tools";

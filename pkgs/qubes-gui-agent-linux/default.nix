@@ -30,7 +30,7 @@
   systemd,
   util-linux,
   which,
-  xenPackages,
+  xen,
   xfce,
   xorg,
   zenity,
@@ -66,7 +66,7 @@ resholve.mkDerivation rec {
       qubes-gui-common
       qubes-core-vchan-xen
       qubes-core-qubesdb
-      xenPackages.xen_4_17-slim
+      xen
     ]
     ++ (with xorg; [
       libXdamage

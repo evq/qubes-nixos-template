@@ -199,7 +199,7 @@ in
           serviceConfig = {
             ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /var/log/xen";
             # Note: the first "" overrides the ExecStart from the upstream unit
-            ExecStart = ["" "${pkgs.xenPackages.xen_4_17-slim}/bin/xl devd"];
+            ExecStart = ["" "${pkgs.xen}/bin/xl devd"];
           };
         };
       }
