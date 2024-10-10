@@ -7,7 +7,6 @@
 with lib; {
   options.services.qubes.networking = {
     enable = mkEnableOption "the qubes networking services";
-    package = mkPackageOption pkgs "qubes-core-agent-linux" {};
   };
 
   config = mkIf config.services.qubes.networking.enable {
@@ -20,14 +19,14 @@ with lib; {
       # ensure the service is started on boot, since Install is ignored
       wantedBy = ["multi-user.target"];
       serviceConfig = {
-        ExecStart = ["" "${config.services.qubes.networking.package}/lib/qubes/init/network-uplink-wait.sh"];
+        ExecStart = ["" "${config.services.qubes.core.package}/lib/qubes/init/network-uplink-wait.sh"];
       };
     };
 
     systemd.services."qubes-network-uplink@" = {
       serviceConfig = {
-        ExecStart = ["" "${config.services.qubes.networking.package}/lib/qubes/setup-ip add \"%i\""];
-        ExecStop = ["" "${config.services.qubes.networking.package}/lib/qubes/setup-ip remove \"%i\""];
+        ExecStart = ["" "${config.services.qubes.core.package}/lib/qubes/setup-ip add \"%i\""];
+        ExecStop = ["" "${config.services.qubes.core.package}/lib/qubes/setup-ip remove \"%i\""];
       };
     };
 
