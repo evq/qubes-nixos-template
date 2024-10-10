@@ -19,3 +19,7 @@
 - usb proxy?
 - using as netvm or usbvm
 - time sync
+- grow root fs
+
+## bugs
+- memory resizing seems to cause crashes in ff
