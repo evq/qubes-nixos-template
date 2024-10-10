@@ -66,7 +66,6 @@
     scripts_using_functions
     ++ [
       "etc/qubes-rpc/qubes.Filecopy"
-      "etc/qubes-rpc/qubes.VMExec"
       "etc/qubes-rpc/qubes.VMShell"
       "etc/qubes-rpc/qubes.WaitForSession"
       "lib/qubes/init/functions"
@@ -230,8 +229,8 @@ in
         # mkdir -p -m 0755 "$out/etc/pacman.d"
         # install -m 644 "archlinux/PKGBUILD-qubes-pacman-options.conf" "$out/etc/pacman.d/10-qubes-options.conf"
 
-        # remove the default update definition since we replace it
-        rm "$out/etc/qubes-rpc/qubes.InstallUpdatesGUI"
+        # remove the default VMExec definition since we need to modify it's PATH based on user args in the updates module
+        rm "$out/etc/qubes-rpc/qubes.VMExec"
 
         mv "$out/usr/bin/qubes-vmexec" "$out/bin/"
         mv "$out/usr/share" "$out/share"

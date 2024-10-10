@@ -24,6 +24,10 @@ with lib; {
     };
 
     systemd.services."qubes-network-uplink@" = {
+      # explicitly add qubes-db as a requirement, otherwise on upgrade they may be restarted
+      # simultaneously which causes setup-ip to fail.
+      requires = ["network-pre.target" "qubes-db.service"];
+
       serviceConfig = {
         ExecStart = ["" "${config.services.qubes.core.package}/lib/qubes/setup-ip add \"%i\""];
         ExecStop = ["" "${config.services.qubes.core.package}/lib/qubes/setup-ip remove \"%i\""];

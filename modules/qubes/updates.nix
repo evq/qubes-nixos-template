@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  writeShellScriptBin,
   ...
 }:
 with lib; {
@@ -40,7 +39,7 @@ with lib; {
     )
     (
       let
-        checkUpdatesScript = pkgs.writeShellScriptBin "upgrades-status-notify" ''
+        upgradesStatusNotify = pkgs.writeShellScriptBin "upgrades-status-notify" ''
           set -e
 
           if [ "$1" = "started-by-init" ]; then
@@ -55,6 +54,7 @@ with lib; {
               fi
           fi
 
+          # FIXME a lot of assumptions here...
           tempdir=$(mktemp -d /tmp/tmp.nix-updateinfo.XXX)
           cp -r /etc/nixos/. $tempdir
           cd $tempdir
@@ -71,37 +71,35 @@ with lib; {
           rm -rf "$tempdir"
         '';
 
-        installUpdates = pkgs.writeTextFile {
-          name = "qubes-rpc-installupdates";
+        getPackages = pkgs.writeShellScriptBin "qubes-nixos-get-packages" ''
+          empty=$(${config.nix.package.out}/bin/nix build --impure --no-link --print-out-paths --expr '(with import <nixpkgs> { }; pkgs.runCommand "empty" { } "mkdir -p $out")')
+          ${config.nix.package.out}/bin/nix store diff-closures "$empty" /run/current-system | ${pkgs.gawk}/bin/awk '/→ [0-9]/ && !/nixos/' |  ${pkgs.gnused}/bin/sed 's/\x1b\[[0-9;]*m//g'
+        '';
+
+        nixosRebuildWrapper = pkgs.writeShellScriptBin "qubes-nixos-rebuild" ''
+          ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags}
+        '';
+
+        vmexec = pkgs.writeTextFile {
+          name = "qubes-rpc-vmexec";
+          # NOTE: in order to perform updates, qubes `vmupdate` injects a python agent into the vm and then
+          # executes it. the agent then calls our scripts to perform various actions.
+          # we need to ensure the VMExec RPC has the correct PATH to find the dependencies and
+          # our update scripts.
           text = ''
             #!${pkgs.stdenv.shell}
-            ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags} | tee /var/log/qubes/qubes-update
 
-            # Notify dom0 about installed updates
-            ${pkgs.systemd}/bin/systemctl start qubes-update-check
+            export PATH=${lib.makeBinPath (with pkgs; [coreutils gnutar python3 upgradesStatusNotify getPackages nixosRebuildWrapper])}:$PATH
+            exec ${config.services.qubes.core.package.out}/bin/qubes-vmexec "$@"
           '';
           executable = true;
-          destination = "/etc/qubes-rpc/qubes.InstallUpdates";
-        };
-        installUpdatesGui = pkgs.writeTextFile {
-          name = "qubes-rpc-installupdatesgui";
-          text = ''
-            #!${pkgs.stdenv.shell}
-            update_cmd='${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags}'
-
-            ${pkgs.xterm}/bin/xterm -title update -e su -s /bin/sh -l -c "$update_cmd; echo Done.; test -f /var/run/qubes/this-is-templatevm && { echo Press Enter to shutdown the template, or Ctrl-C to just close this window; read x && ${pkgs.systemd}/bin/poweroff; } ;"
-
-            # Notify dom0 about installed updates
-            ${pkgs.systemd}/bin/systemctl start qubes-update-check
-          '';
-          executable = true;
-          destination = "/etc/qubes-rpc/qubes.InstallUpdatesGUI";
+          destination = "/etc/qubes-rpc/qubes.VMExec";
         };
       in {
-        services.qubes.qrexec.packages = [installUpdates installUpdatesGui];
+        services.qubes.qrexec.packages = [vmexec];
         systemd.services.qubes-update-check = {
           serviceConfig = {
-            ExecStart = ["" "${checkUpdatesScript}/bin/upgrades-status-notify started-by-init"];
+            ExecStart = ["" "${upgradesStatusNotify}/bin/upgrades-status-notify started-by-init"];
           };
         };
       }
