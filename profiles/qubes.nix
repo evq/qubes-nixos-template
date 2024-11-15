@@ -7,6 +7,7 @@
   services.qubes.qrexec.enable = true;
   services.qubes.gui.enable = true;
   services.qubes.networking.enable = true;
+  services.qubes.usb.enable = true;
 
   fonts.enableDefaultPackages = true;
 

@@ -9,17 +9,20 @@
 - ssh over qrexec ( handy for using --target-host with nixos-rebuild )
 - memory reporting / ballooning
 - qubes update checks
+- qubes update triggers
+- usb proxy
 
 ## what doesn't work / untested
-- qubes update triggers
 - populating application shortcuts
 - update proxy
 - building an rpm for the templatevm
 - using a non-xen provided kernel
-- usb proxy?
 - using as netvm or usbvm
 - time sync
 - grow root fs
 
 ## bugs
 - memory resizing seems to cause crashes in ff
+
+## todo
+- deal with substituteInPlace deprecation

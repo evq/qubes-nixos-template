@@ -21,6 +21,7 @@
       qubes-gui-common = prev.callPackage ./pkgs/qubes-gui-common {};
       qubes-gui-agent-linux = prev.callPackage ./pkgs/qubes-gui-agent-linux {};
       qubes-sshd = prev.callPackage ./pkgs/qubes-sshd {};
+      qubes-usb-proxy = prev.callPackage ./pkgs/qubes-usb-proxy {};
     };
 
     pkgs = import nixpkgs {
@@ -45,6 +46,7 @@
         ./modules/qubes/qrexec.nix
         ./modules/qubes/sshd.nix
         ./modules/qubes/updates.nix
+        ./modules/qubes/usb.nix
       ];
     };
     nixosProfiles.default = {
@@ -56,6 +58,9 @@
       imports = [
         ./profiles/qubes.nix
       ];
+    };
+    pkgs = {
+      qubes-usb-proxy = pkgs.qubes-usb-proxy;
     };
     rpm = pkgs.callPackage ./tools/rpm.nix {
       inherit nixpkgs;
