@@ -23,7 +23,7 @@
 
     src = fetchFromGitHub {
       owner = "QubesOS";
-      repo = pname;
+      repo = name;
       rev = "v${version}";
       hash = "sha256-XHx1wt2whMQC+TUc2U97KCOJ8memT6cH0BAp2zxYQyQ=";
     };
