@@ -59,9 +59,6 @@
         ./profiles/qubes.nix
       ];
     };
-    pkgs = {
-      qubes-usb-proxy = pkgs.qubes-usb-proxy;
-    };
     rpm = pkgs.callPackage ./tools/rpm.nix {
       inherit nixpkgs;
       nixosConfig =
@@ -71,10 +68,9 @@
           modules = [
             self.nixosModules.default
             self.nixosProfiles.default
-            #./configuration.nix
+            ./examples/configuration.nix
           ];
-        }
-        .config;
+        };
     };
   };
 }

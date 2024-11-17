@@ -8,9 +8,9 @@
   version = "4.0.6";
   rootImg = import "${nixpkgs}/nixos/lib/make-disk-image.nix" {
     inherit lib pkgs;
-    config = nixosConfig;
+    config = nixosConfig.config;
     diskSize = 10240; # 10G
-    partitionTableType = "legacy+gpt";
+    partitionTableType = "hybrid";
     name = "root";
   };
 in
@@ -21,7 +21,7 @@ in
       owner = "QubesOS";
       repo = "qubes-linux-template-builder";
       rev = "v${version}";
-      hash = "";
+      hash = "sha256-ABfhqyg9PypuKWYe6yhEr99hxf7qWsYCwRyToGhPKZA=";
     };
 
     nativeBuildInputs = [
@@ -37,16 +37,16 @@ in
       set -x
 
       mkdir -p qubeized_images/nixos
-      ln -s ${rootImg}/root.img qubeized_images/nixos/root.img
+      ln -s ${rootImg}/nixos.img qubeized_images/nixos/root.img
 
       ln -s "appmenus_generic" appmenus
       cp template_generic.conf template.conf
 
-      ./build_template_rpm nixos
+      DIST=nixos ./build_template_rpm nixos
     '';
 
     installPhase = ''
       mkdir $out/
-      mv RPMS/noarch/*.rpm $out/
+      mv rpm/noarch/*.rpm $out/
     '';
   }

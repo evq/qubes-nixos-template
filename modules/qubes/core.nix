@@ -57,7 +57,7 @@ in
 
         fileSystems = {
           "/" = {
-            device = "/dev/xvda1";
+            device = "/dev/mapper/dmroot";
             fsType = "ext4";
           };
           "/proc/xen" = {
