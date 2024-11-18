@@ -23,8 +23,31 @@ qvm-start nixos
 qvm-run nixos xterm
 ```
 
-at this point you can customize the template and use it like any other NixOS install. the example config
-has been copied to `/etc/nixos`.
+at this point you can customize the template and use it like any other NixOS install. the example config has been copied to `/etc/nixos`.
+
+## issues with the qubes updates proxy
+
+by default a qubes template does not have direct internet access and instead uses the qubes updates proxy
+over qrpc. nix does not have a concept of a global proxy setting and as such is tricky to correctly 
+configure in a way that doesn't involve simply setting `all_proxy` everywhere. 
+
+as a compromise the packaging sets `all_proxy` for nix-daemon but not all downloads go through nix-daemon. the qubes packaging in this repo creates aliases for interactive shells that wrap a few of the common nix programs to pass proxy info. however this leaves various edge cases, a few of which are noted below. remember that you can always set `all_proxy` in your environment manually or in the worst case, switch to giving the template direct internet access.
+
+### issues with sudo nix commands
+
+due to the above, you're likely to run into issues when running `sudo nix...` - in these cases you can instead first get an interactive root shell e.g. via `sudo su`.
+
+### issues with remote nix configs on github
+
+you may run into issues if you pull a remote nix config over ssh from github. to workaround
+you can add the following to `~/.ssh/config` ( the host and port overrides are necessary since these
+qubes updates proxy filters port 22. ):
+```
+Host github.com
+  HostName ssh.github.com
+  Port 443
+  ProxyCommand nc -X connect -x 127.0.0.1:8082 %h %p
+```
 
 ## notes
 
