@@ -37,21 +37,22 @@ has been copied to `/etc/nixos`.
 - ssh over qrexec ( handy for using --target-host with nixos-rebuild )
 - memory reporting / ballooning
 - qubes update checks
-- qubes update triggers
+- qubes update triggers ( requires unmerged upstream changes )
 - usb proxy
+- building an rpm for the templatevm
+- grow root fs
+- update proxy
 
 ### what doesn't work / untested
 - qrexec startup isn't clean, commands can fail initially
 - populating application shortcuts
-- update proxy
-- building an rpm for the templatevm
 - using a non-xen provided kernel
 - using as netvm or usbvm
-- time sync
-- grow root fs
+- time sync via rpc ( currently handled is systemd-timesyncd, but per vm ntp sync creates more attack surface area? )
 
 ### bugs
 - memory resizing seems to cause crashes in ff
 
 ### todo
 - deal with substituteInPlace deprecation
+- should be using 4.2.x package versions across the board, there's a couple 4.3.x packages atm

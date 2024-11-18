@@ -193,7 +193,16 @@ in
           };
         };
 
-        #systemd.services.qubes-updates-proxy-forwarder@ = {
+        systemd.sockets."qubes-updates-proxy-forwarder" = {
+          # ensure the socket is activated, since Install is ignored
+          wantedBy = ["multi-user.target"];
+        };
+
+        systemd.services."qubes-updates-proxy-forwarder@" = {
+          serviceConfig = {
+            ExecStart = ["" "${pkgs.qubes-core-qrexec}/bin/qrexec-client-vm --use-stdin-socket '' qubes.UpdatesProxy"];
+          };
+        };
 
         systemd.services.xendriverdomain = {
           serviceConfig = {
@@ -202,6 +211,14 @@ in
             ExecStart = ["" "${pkgs.xen}/bin/xl devd"];
           };
         };
+
+        # since there is no global nix proxy setting, add aliases which will
+        # inherit the proxy settings from nix-daemon set by update-proxy-configs
+        environment.interactiveShellInit = ''
+          alias nix="all_proxy=\$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*') nix"
+          alias nix-shell="all_proxy=\$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*') nix-shell"
+          alias nixos-rebuild="all_proxy=\$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*') nixos-rebuild"
+        '';
       }
     );
   }

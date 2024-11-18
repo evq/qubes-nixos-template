@@ -77,6 +77,9 @@ with lib; {
         '';
 
         nixosRebuildWrapper = pkgs.writeShellScriptBin "qubes-nixos-rebuild" ''
+          # in update-proxy-configs we might set proxy via an override
+          export all_proxy=\$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*')
+
           ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags}
         '';
 
