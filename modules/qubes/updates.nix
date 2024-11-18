@@ -12,6 +12,8 @@ with lib; {
       default = [
         "--update-input"
         "nixpkgs"
+        "--update-input"
+        "qubes-nixos-template"
       ];
       example = [
         "-I"
