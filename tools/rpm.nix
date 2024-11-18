@@ -4,11 +4,22 @@
   nixpkgs,
   pkgs,
   nixosConfig,
+  qubesVersion,
 }: let
   version = "4.0.6";
   rootImg = import "${nixpkgs}/nixos/lib/make-disk-image.nix" {
     inherit lib pkgs;
     config = nixosConfig.config;
+    contents = [
+      {
+        source = ../examples/configuration.nix;
+        target = "/etc/nixos/configuration.nix";
+      }
+      {
+        source = ../examples/flake.nix;
+        target = "/etc/nixos/flake.nix";
+      }
+    ];
     diskSize = 10240; # 10G
     partitionTableType = "hybrid";
     name = "root";
@@ -41,6 +52,9 @@ in
 
       ln -s "appmenus_generic" appmenus
       cp template_generic.conf template.conf
+
+      date +"%Y%m%d%H%M" > build_timestamp_nixos
+      echo ${qubesVersion} > version
 
       DIST=nixos ./build_template_rpm nixos
     '';

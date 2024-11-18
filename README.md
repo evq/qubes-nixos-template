@@ -12,7 +12,7 @@ qvm-run --pass-io <YOUR_DOWNLOAD_VM> 'cat <FULL_RPM_PATH>' > qubes-template-nixo
 ```
 3. install the template
 ```
-qvm-template install qubes-template-nixos-4.2.0-unavailable.noarch.rpm
+qvm-template install qubes-template-nixos-4.2.0-unavailable.noarch.rpm --nogpgcheck
 ```
 4. start the template and wait about 30s ( see qrexec notes. )
 ```
@@ -23,9 +23,8 @@ qvm-start nixos
 qvm-run nixos xterm
 ```
 
-at this point you can customize the template and use it like any other NixOS install. As a starting point 
-I recommend using ./examples/flake.nix and ./examples/configuration.nix to ensure the qubes packages 
-and configuration remain installed.
+at this point you can customize the template and use it like any other NixOS install. the example config
+has been copied to `/etc/nixos`.
 
 ## notes
 

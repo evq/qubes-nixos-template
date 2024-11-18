@@ -61,6 +61,7 @@
     };
     rpm = pkgs.callPackage ./tools/rpm.nix {
       inherit nixpkgs;
+      qubesVersion = "4.2.0";
       nixosConfig =
         lib.nixosSystem
         {
