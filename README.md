@@ -72,6 +72,7 @@ Host github.com
 - using a non-xen provided kernel
 - using as netvm or usbvm
 - time sync via rpc ( currently handled is systemd-timesyncd, but per vm ntp sync creates more attack surface area? )
+- audio
 
 ### bugs
 - memory resizing seems to cause crashes in ff
