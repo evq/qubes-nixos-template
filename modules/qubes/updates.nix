@@ -44,6 +44,8 @@ with lib; {
         upgradesStatusNotify = pkgs.writeShellScriptBin "upgrades-status-notify" ''
           set -e
 
+          export PATH=${lib.makeBinPath (with pkgs; [git])}:$PATH
+
           if [ "$1" = "started-by-init" ]; then
               true "INFO: Started by systemd unit (timer.) Continuing..."
           else
@@ -79,6 +81,8 @@ with lib; {
         '';
 
         nixosRebuildWrapper = pkgs.writeShellScriptBin "qubes-nixos-rebuild" ''
+          export PATH=${lib.makeBinPath (with pkgs; [git])}:$PATH
+
           # in update-proxy-configs we might set proxy via an override
           export all_proxy=$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*')
 
