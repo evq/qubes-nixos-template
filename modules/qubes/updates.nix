@@ -30,6 +30,14 @@ with lib; {
         to update nixpkgs.
       '';
     };
+    extraPackages = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [];
+      example = [pkgs.git pkgs.openssh];
+      description = ''
+        Any additional packages which should be available in the path for {command}`nixos-rebuild`, used for both the check and actual update.
+      '';
+    };
   };
   config = mkMerge [
     (
@@ -43,6 +51,8 @@ with lib; {
       let
         upgradesStatusNotify = pkgs.writeShellScriptBin "upgrades-status-notify" ''
           set -e
+
+          export PATH=${lib.makeBinPath config.services.qubes.updates.extraPackages}:$PATH
 
           if [ "$1" = "started-by-init" ]; then
               true "INFO: Started by systemd unit (timer.) Continuing..."
@@ -79,6 +89,8 @@ with lib; {
         '';
 
         nixosRebuildWrapper = pkgs.writeShellScriptBin "qubes-nixos-rebuild" ''
+          export PATH=${lib.makeBinPath config.services.qubes.updates.extraPackages}:$PATH
+
           # in update-proxy-configs we might set proxy via an override
           export all_proxy=$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*')
 
