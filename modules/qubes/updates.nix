@@ -113,6 +113,9 @@ with lib; {
           destination = "/etc/qubes-rpc/qubes.VMExec";
         };
       in {
+        environment.systemPackages = [
+          nixosRebuildWrapper
+        ];
         services.qubes.qrexec.packages = [vmexec];
         systemd.services.qubes-update-check = {
           serviceConfig = {
