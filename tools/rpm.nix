@@ -56,6 +56,10 @@ in
       date +"%Y%m%d%H%M" > build_timestamp_nixos
       echo ${qubesVersion} > version
 
+      substituteInPlace templates.spec --replace qubeized_images "$(pwd)/qubeized_images"
+      substituteInPlace templates.spec --replace " appmenus" " $(pwd)/appmenus"
+      substituteInPlace templates.spec --replace " template.conf" " $(pwd)/template.conf"
+
       DIST=nixos ./build_template_rpm nixos
     '';
 
