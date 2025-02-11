@@ -37,6 +37,9 @@ resholve.mkDerivation rec {
     mv $out/usr/lib/qubes $out/lib/qubes
     mv "$out/usr/lib/udev" "$out/lib/udev"
 
+    # overwrite the broken symlink created by make install-vm
+    ln -sf ../../../lib/qubes/usb-detach-all "$out/etc/qubes/suspend-pre.d/usb-detach-all.sh"
+
     substituteInPlace "$out/lib/qubes/usb-reset" --replace "#!/usr/bin/python3" "#!${python3}/bin/python3"
 
     # we have udevadm by way of kmod, skip the check since resholve won't handle it
