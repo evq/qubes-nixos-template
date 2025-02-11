@@ -196,6 +196,17 @@ in
         make -C qubes-rpc/nautilus DESTDIR="$out" BINDIR=/bin LIBDIR=/lib QUBESLIBDIR=/lib/qubes install
         make -C qubes-rpc/thunar DESTDIR="$out" BINDIR=/bin LIBDIR=/lib install
 
+        # fixup symlinks, noBrokenSymlinks should only fail for symlinks pointing inside the store
+        IFS=; while read -r i; do \
+          case ''$i in \
+            ('''|'#'*) continue;; \
+            (*[!A-Za-z0-9._-]*) \
+              printf 'ERROR: bad data directory "%s"\n' "''$i" >&2; exit 1;;\
+          esac; \
+          ln -sf "/run/current-system/sw/share/''$i" $out/usr/share/qubes/xdg-override; \
+        done < misc/data-dirs
+        rm $out/usr/share/applications/defaults.list
+
         # install cron bindmount
         mkdir -p "$out/lib/qubes-bind-dirs.d"
         install -m 0644 "filesystem/30_cron.conf" "$out/lib/qubes-bind-dirs.d/30_cron.conf"
@@ -231,6 +242,8 @@ in
 
         # remove the default VMExec definition since we need to modify it's PATH based on user args in the updates module
         rm "$out/etc/qubes-rpc/qubes.VMExec"
+        # also remove VMExecGUI since it points to VMExec and will be a dangling link
+        rm "$out/etc/qubes-rpc/qubes.VMExecGUI"
 
         mv "$out/usr/bin/qubes-vmexec" "$out/bin/"
         mv "$out/usr/share" "$out/share"
@@ -266,6 +279,8 @@ in
             USER_DROPIN_DIR=/usr/lib/systemd/user \
             DIST=nixos
 
+        # overwrite the broken symlink created by make install-netvm
+        ln -sf ../../lib/qubes/qubes-setup-dnat-to-ns $out/etc/dhclient.d/qubes-setup-dnat-to-ns.sh
 
         for path in lib/qubes/init/network-uplink-wait.sh lib/qubes/setup-ip lib/qubes/update-proxy-configs ; do
           substituteInPlace "$out/$path" --replace '/usr/lib/qubes/init/functions' "functions"
