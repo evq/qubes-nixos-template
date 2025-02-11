@@ -118,6 +118,10 @@ resholve.mkDerivation rec {
         USRLIBDIR=/lib \
         SYSLIBDIR=/lib
 
+    # overwrite the broken symlink created by make install-rh-agent
+    ln -sf ../../bin/qubes-set-monitor-layout $out/etc/qubes-rpc/qubes.SetMonitorLayout
+    ln -sf ../../bin/qubes-start-xephyr $out/etc/qubes-rpc/qubes.GuiVMSession
+
     # this will point to the unresholved package but it is not an
     # issue since our wrapper only refers to external resources
     substituteInPlace "$out/etc/xdg/autostart/qubes-qrexec-fork-server.desktop" --replace '/usr/bin/qrexec-fork-server' "$out/bin/qrexec-fork-server"
