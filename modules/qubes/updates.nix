@@ -94,7 +94,12 @@ with lib; {
           # in update-proxy-configs we might set proxy via an override
           export all_proxy=$(systemctl show nix-daemon -p Environment | grep -oP '(?<=all_proxy=)[^ ]*')
 
-          ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags}
+          # by default switch to the new generation, updating the system
+          if [ $# -eq 0 ]; then
+            ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch ${toString config.services.qubes.updates.flags}
+          else
+            ${config.system.build.nixos-rebuild}/bin/nixos-rebuild "$@"
+          fi
         '';
 
         vmexec = pkgs.writeTextFile {
