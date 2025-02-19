@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   services.qubes.qrexec.enable = true;
   services.qubes.gui.enable = true;
   services.qubes.networking.enable = true;

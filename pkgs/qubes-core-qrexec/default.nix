@@ -68,9 +68,12 @@ resholve.mkDerivation rec {
 
   solutions = {
     default = {
-      scripts = ["lib/qubes/qubes-rpc-multiplexer"];
+      scripts = [ "lib/qubes/qubes-rpc-multiplexer" ];
       interpreter = "none";
-      inputs = [coreutils util-linux];
+      inputs = [
+        coreutils
+        util-linux
+      ];
     };
   };
 
@@ -78,7 +81,7 @@ resholve.mkDerivation rec {
     description = "The Qubes qrexec files (qube side)";
     homepage = "https://qubes-os.org";
     license = licenses.gpl2Plus;
-    maintainers = [];
+    maintainers = [ ];
     platforms = platforms.linux;
   };
 }

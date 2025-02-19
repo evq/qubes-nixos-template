@@ -187,7 +187,7 @@ resholve.mkDerivation rec {
         ];
       };
       fix = {
-        source = ["/usr/lib/qubes/init/functions"];
+        source = [ "/usr/lib/qubes/init/functions" ];
         "/usr/bin/qubes-gui-runuser" = true;
         "/usr/bin/qubesdb-read" = true;
       };
@@ -241,7 +241,7 @@ resholve.mkDerivation rec {
     description = "The Qubes GUI Agent for AppVMs";
     homepage = "https://qubes-os.org";
     license = licenses.gpl2Plus;
-    maintainers = [];
+    maintainers = [ ];
     platforms = platforms.linux;
   };
 }

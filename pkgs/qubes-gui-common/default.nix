@@ -27,7 +27,7 @@ stdenv.mkDerivation rec {
     description = "Common files for Qubes GUI - protocol headers";
     homepage = "https://qubes-os.org";
     license = licenses.gpl2Plus;
-    maintainers = [];
+    maintainers = [ ];
     platforms = platforms.linux;
   };
 }

@@ -5,7 +5,8 @@
   pkgs,
   nixosConfig,
   qubesVersion,
-}: let
+}:
+let
   version = "4.0.6";
   rootImg = import "${nixpkgs}/nixos/lib/make-disk-image.nix" {
     inherit lib pkgs;
@@ -25,46 +26,46 @@
     name = "root";
   };
 in
-  pkgs.stdenvNoCC.mkDerivation {
-    name = "qubes-template-rpm";
+pkgs.stdenvNoCC.mkDerivation {
+  name = "qubes-template-rpm";
 
-    src = fetchFromGitHub {
-      owner = "QubesOS";
-      repo = "qubes-linux-template-builder";
-      rev = "v${version}";
-      hash = "sha256-ABfhqyg9PypuKWYe6yhEr99hxf7qWsYCwRyToGhPKZA=";
-    };
+  src = fetchFromGitHub {
+    owner = "QubesOS";
+    repo = "qubes-linux-template-builder";
+    rev = "v${version}";
+    hash = "sha256-ABfhqyg9PypuKWYe6yhEr99hxf7qWsYCwRyToGhPKZA=";
+  };
 
-    nativeBuildInputs = [
-      pkgs.rpm
-      pkgs.coreutils
-      pkgs.gnutar
-    ];
+  nativeBuildInputs = [
+    pkgs.rpm
+    pkgs.coreutils
+    pkgs.gnutar
+  ];
 
-    dontConfigure = true;
-    dontFixup = true;
+  dontConfigure = true;
+  dontFixup = true;
 
-    buildPhase = ''
-      set -x
+  buildPhase = ''
+    set -x
 
-      mkdir -p qubeized_images/nixos
-      ln -s ${rootImg}/nixos.img qubeized_images/nixos/root.img
+    mkdir -p qubeized_images/nixos
+    ln -s ${rootImg}/nixos.img qubeized_images/nixos/root.img
 
-      ln -s "appmenus_generic" appmenus
-      cp template_generic.conf template.conf
+    ln -s "appmenus_generic" appmenus
+    cp template_generic.conf template.conf
 
-      date +"%Y%m%d%H%M" > build_timestamp_nixos
-      echo ${qubesVersion} > version
+    date +"%Y%m%d%H%M" > build_timestamp_nixos
+    echo ${qubesVersion} > version
 
-      substituteInPlace templates.spec --replace qubeized_images "$(pwd)/qubeized_images"
-      substituteInPlace templates.spec --replace " appmenus" " $(pwd)/appmenus"
-      substituteInPlace templates.spec --replace " template.conf" " $(pwd)/template.conf"
+    substituteInPlace templates.spec --replace qubeized_images "$(pwd)/qubeized_images"
+    substituteInPlace templates.spec --replace " appmenus" " $(pwd)/appmenus"
+    substituteInPlace templates.spec --replace " template.conf" " $(pwd)/template.conf"
 
-      DIST=nixos ./build_template_rpm nixos
-    '';
+    DIST=nixos ./build_template_rpm nixos
+  '';
 
-    installPhase = ''
-      mkdir $out/
-      mv rpm/noarch/*.rpm $out/
-    '';
-  }
+  installPhase = ''
+    mkdir $out/
+    mv rpm/noarch/*.rpm $out/
+  '';
+}

@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
     hash = "sha256-O7i5zK7S+d/O8oPMvm6szNR1Xq6qSBNE2+uFI/1mDEg=";
   };
 
-  buildInputs = [xen];
+  buildInputs = [ xen ];
 
   buildPhase = ''
     make all PREFIX=/ LIBDIR="$out/lib" INCLUDEDIR="$out/include"
@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
     description = "Libraries required for the higher-level Qubes daemons and tools";
     homepage = "https://qubes-os.org";
     license = licenses.gpl2Plus;
-    maintainers = [];
+    maintainers = [ ];
     platforms = platforms.linux;
   };
 }

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.services.qubes.updates = {
     check = mkEnableOption "enable updates check, can be resource intensive due to required nix build";
     flags = lib.mkOption {
@@ -32,21 +33,22 @@ with lib; {
     };
     extraPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
-      default = [];
-      example = [pkgs.git pkgs.openssh];
+      default = [ ];
+      example = [
+        pkgs.git
+        pkgs.openssh
+      ];
       description = ''
         Any additional packages which should be available in the path for {command}`nixos-rebuild`, used for both the check and actual update.
       '';
     };
   };
   config = mkMerge [
-    (
-      mkIf config.services.qubes.updates.check {
-        systemd.timers.qubes-update-check = {
-          wantedBy = ["timers.target"];
-        };
-      }
-    )
+    (mkIf config.services.qubes.updates.check {
+      systemd.timers.qubes-update-check = {
+        wantedBy = [ "timers.target" ];
+      };
+    })
     (
       let
         upgradesStatusNotify = pkgs.writeShellScriptBin "upgrades-status-notify" ''
@@ -111,20 +113,36 @@ with lib; {
           text = ''
             #!${pkgs.stdenv.shell}
 
-            export PATH=${lib.makeBinPath (with pkgs; [coreutils gnutar python3 upgradesStatusNotify getPackages nixosRebuildWrapper])}:$PATH
+            export PATH=${
+              lib.makeBinPath (
+                with pkgs;
+                [
+                  coreutils
+                  gnutar
+                  python3
+                  upgradesStatusNotify
+                  getPackages
+                  nixosRebuildWrapper
+                ]
+              )
+            }:$PATH
             exec ${config.services.qubes.core.package.out}/bin/qubes-vmexec "$@"
           '';
           executable = true;
           destination = "/etc/qubes-rpc/qubes.VMExec";
         };
-      in {
+      in
+      {
         environment.systemPackages = [
           nixosRebuildWrapper
         ];
-        services.qubes.qrexec.packages = [vmexec];
+        services.qubes.qrexec.packages = [ vmexec ];
         systemd.services.qubes-update-check = {
           serviceConfig = {
-            ExecStart = ["" "${upgradesStatusNotify}/bin/upgrades-status-notify started-by-init"];
+            ExecStart = [
+              ""
+              "${upgradesStatusNotify}/bin/upgrades-status-notify started-by-init"
+            ];
           };
         };
       }

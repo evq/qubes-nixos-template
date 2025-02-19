@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.services.qubes.networking = {
     enable = mkEnableOption "the qubes networking services";
   };
@@ -17,20 +18,32 @@ with lib; {
 
     systemd.services.qubes-network-uplink = {
       # ensure the service is started on boot, since Install is ignored
-      wantedBy = ["multi-user.target"];
+      wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = ["" "${config.services.qubes.core.package}/lib/qubes/init/network-uplink-wait.sh"];
+        ExecStart = [
+          ""
+          "${config.services.qubes.core.package}/lib/qubes/init/network-uplink-wait.sh"
+        ];
       };
     };
 
     systemd.services."qubes-network-uplink@" = {
       # explicitly add qubes-db as a requirement, otherwise on upgrade they may be restarted
       # simultaneously which causes setup-ip to fail.
-      requires = ["network-pre.target" "qubes-db.service"];
+      requires = [
+        "network-pre.target"
+        "qubes-db.service"
+      ];
 
       serviceConfig = {
-        ExecStart = ["" "${config.services.qubes.core.package}/lib/qubes/setup-ip add \"%i\""];
-        ExecStop = ["" "${config.services.qubes.core.package}/lib/qubes/setup-ip remove \"%i\""];
+        ExecStart = [
+          ""
+          "${config.services.qubes.core.package}/lib/qubes/setup-ip add \"%i\""
+        ];
+        ExecStop = [
+          ""
+          "${config.services.qubes.core.package}/lib/qubes/setup-ip remove \"%i\""
+        ];
       };
     };
 

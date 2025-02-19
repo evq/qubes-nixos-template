@@ -70,8 +70,8 @@ resholve.mkDerivation rec {
       fix = {
         "/usr/lib/qubes/usb-reset" = true;
         "/usr/lib/qubes/usb-export" = true;
-        "$QUBES_USB_EXPORT" = ["${placeholder "out"}/lib/qubes/usb-export"];
-        "$QUBES_USB_IMPORT" = ["${placeholder "out"}/lib/qubes/usb-import"];
+        "$QUBES_USB_EXPORT" = [ "${placeholder "out"}/lib/qubes/usb-export" ];
+        "$QUBES_USB_IMPORT" = [ "${placeholder "out"}/lib/qubes/usb-import" ];
       };
       fake = {
         external = [
@@ -108,7 +108,7 @@ resholve.mkDerivation rec {
     description = "The Qubes service for proxying USB devices";
     homepage = "https://qubes-os.org";
     license = licenses.gpl2Plus;
-    maintainers = [];
+    maintainers = [ ];
     platforms = platforms.linux;
   };
 }

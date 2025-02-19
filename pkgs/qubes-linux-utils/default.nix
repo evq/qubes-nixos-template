@@ -14,7 +14,8 @@
   qubes-core-vchan-xen,
   qubes-core-qubesdb,
   xen,
-}: let
+}:
+let
   version = "4.3.3";
   name = "qubes-linux-utils";
   resholved = resholve.mkDerivation rec {
@@ -102,13 +103,14 @@
       description = "Common Linux files for Qubes VM.";
       homepage = "https://qubes-os.org";
       license = licenses.gpl2Plus;
-      maintainers = [];
+      maintainers = [ ];
       platforms = platforms.linux;
     };
   };
 in
-  # FIXME stupid hack, can't figure out how to do these fixups otherwise
-  lib.extendDerivation true {} (stdenv.mkDerivation {
+# FIXME stupid hack, can't figure out how to do these fixups otherwise
+lib.extendDerivation true { } (
+  stdenv.mkDerivation {
     src = resholved;
     inherit version;
     pname = name;
@@ -121,4 +123,5 @@ in
       substituteInPlace "$out/lib/udev/rules.d/99-qubes-usb.rules" --replace '/usr/lib/qubes/' "${resholved}/lib/qubes/"
       substituteInPlace "$out/lib/udev/rules.d/99-qubes-block.rules" --replace '/usr/lib/qubes/' "${resholved}/lib/qubes/"
     '';
-  })
+  }
+)
