@@ -3,11 +3,13 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs = {
     self,
     nixpkgs,
+    treefmt-nix,
     ...
   }: let
     lib = nixpkgs.lib;
@@ -31,6 +33,8 @@
       ];
     };
   in {
+    formatter = (treefmt-nix.lib.evalModule pkgs ./tools/treefmt.nix).nixpkgs.legacyPackages.${system}.config.build.wrapper;
+
     overlays.default = qubesPackages;
     nixosModules.default = {
       config,
