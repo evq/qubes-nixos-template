@@ -30,7 +30,7 @@
         qubesPackages
       ];
     };
-  in {
+  in rec {
     overlays.default = qubesPackages;
     nixosModules.default = {
       config,
@@ -59,10 +59,8 @@
         ./profiles/qubes.nix
       ];
     };
-    rpm = pkgs.callPackage ./tools/rpm.nix {
-      inherit nixpkgs;
-      qubesVersion = "4.2.0";
-      nixosConfig =
+    nixosConfigurations = {
+      nixos =
         lib.nixosSystem
         {
           inherit pkgs system;
@@ -72,6 +70,21 @@
             ./examples/configuration.nix
           ];
         };
+      iso = lib.nixosSystem {
+        inherit system;
+        specialArgs = {
+          targetSystem = nixosConfigurations.nixos;
+        };
+        modules = [
+          ./tools/iso.nix
+        ];
+      };
     };
+    rpm = pkgs.callPackage ./tools/rpm.nix {
+      inherit nixpkgs;
+      qubesVersion = "4.2.0";
+      nixosConfig = nixosConfigurations.nixos;
+    };
+    iso = nixosConfigurations.iso.config.system.build.isoImage;
   };
 }
