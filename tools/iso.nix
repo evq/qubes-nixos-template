@@ -109,17 +109,20 @@ in {
     packages = [pkgs.terminus_font];
   };
 
+  services.getty.autologinUser = "root";
+  programs.bash.interactiveShellInit = ''
+    if [[ "$(tty)" =~ /dev/(tty1)$ ]]; then
+      # workaround for https://github.com/NixOS/nixpkgs/issues/219239
+      systemctl restart systemd-vconsole-setup.service
+
+      reset
+
+      ${installerFailsafe}
+    fi
+  '';
+
   isoImage.isoName = "${config.isoImage.isoBaseName}-${config.system.nixos.label}-${pkgs.stdenv.hostPlatform.system}.iso";
   isoImage.makeEfiBootable = true;
   isoImage.makeUsbBootable = true;
   isoImage.squashfsCompression = "zstd -Xcompression-level 15"; # xz takes forever
-
-  systemd.services."serial-getty@hvc0" = {
-    overrideStrategy = "asDropin";
-    serviceConfig = {
-      ExecStart = ["" installerFailsafe];
-      Restart = "no";
-      StandardInput = "null";
-    };
-  };
 }

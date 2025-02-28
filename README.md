@@ -33,20 +33,15 @@ a fresh hvm template.
 1. download the custom installer iso from github releases
 2. create a new qube, select type "TemplateVM", template "(none)", name "nixos", networking "(none)", tick "Launch settings after creation", press "OK" button
 3. in the settings for the new qube, go to the advanced tab, change the kernel to "(provided by qube)" and virtualization mode to "HVM", press "Apply" button
-4. click the "boot qube from CD-ROM" button, click the "from file in qube" option and browse for the downloaded iso. press "OK" button, the qube will launch a boot console - ignore it for now
-5. in a new dom0 terminal run
-```
-tail -f /var/log/xen/console/guest-nixos.log
-```
-6. in the boot console that launched previously, press enter when it says that the system is in rescue mode ( "Press Enter to continue" )
-7. watch the install logs in the dom0 console running tail
-8. the system will auto shutdown on successful install
-9. open the settings for the qube, go to the advanced tab, change the kernel to "default (...)" and virtualization mode to "default (PVH)"
-10. start the template and wait about 30s ( see qrexec notes. )
+4. click the "boot qube from CD-ROM" button, click the "from file in qube" option and browse for the downloaded iso. press "OK" button, the qube will launch a boot console
+5. wait for about 15s then press enter to begin the install ( the boot console will say "Press Enter to continue" )
+6. the system will auto shutdown on successful install
+7. open the settings for the qube, go to the advanced tab, change the kernel to "default (...)" and virtualization mode to "default (PVH)"
+8. start the template and wait about 30s ( see qrexec notes. )
 ```
 qvm-start nixos
 ```
-11. start a terminal in the template
+9. start a terminal in the template
 ```
 qvm-run nixos xterm
 ```
@@ -106,4 +101,3 @@ Host github.com
 ### todo
 - deal with substituteInPlace deprecation
 - should be using 4.2.x package versions across the board, there's a couple 4.3.x packages atm
-- get the iso installer working on tty1 instead of hvc0
