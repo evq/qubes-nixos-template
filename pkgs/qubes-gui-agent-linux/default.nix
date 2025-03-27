@@ -78,7 +78,6 @@ resholve.mkDerivation rec {
   buildInputs =
     [
       coreutils
-      pkgs.mesa
       qubes-core-vchan-xen
       qubes-core-qubesdb
       pam
@@ -197,7 +196,6 @@ resholve.mkDerivation rec {
         "${qubes-core-agent-linux}/lib/qubes"
         "${qubes-core-agent-linux}/lib/qubes/init/functions"
         bash
-        pkgs.mesa
         coreutils
         gnused
         qubes-core-qubesdb

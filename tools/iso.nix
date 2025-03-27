@@ -21,8 +21,6 @@
   installer = pkgs.writeShellApplication {
     name = "installer";
     runtimeInputs = with pkgs; [
-      mesa
-      wlroots
       dosfstools
       e2fsprogs
       gawk

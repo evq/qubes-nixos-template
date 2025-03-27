@@ -93,7 +93,6 @@ in
       [
         bash
         pkgs.mesa
-        pkgs.wlroots
         desktop-file-utils
         gobject-introspection
         lsb-release
@@ -115,7 +114,6 @@ in
 
     buildInputs =
       [
-        pkgs.mesa
         coreutils
         dconf
         fakeroot
@@ -353,7 +351,6 @@ in
             "${qubes-core-qrexec}/lib/qubes"
             "${systemd}/lib/systemd"
             bash
-            pkgs.mesa
             coreutils
             diffutils
             e2fsprogs
