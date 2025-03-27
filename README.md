@@ -7,19 +7,19 @@ without gpg signature verification
 
 1. download the template rpm from github releases or build it yourself via `nix build .#rpm` ( preferred )
 2. copy the template rpm to dom0
-```
+```bash
 qvm-run --pass-io <YOUR_DOWNLOAD_VM> 'cat <FULL_RPM_PATH>' > qubes-template-nixos-4.2.0-unavailable.noarch.rpm
 ```
 3. install the template
-```
+```bash
 qvm-template install qubes-template-nixos-4.2.0-unavailable.noarch.rpm --nogpgcheck
 ```
 4. start the template and wait about 30s ( see qrexec notes. )
-```
+```bash
 qvm-start nixos
 ```
 5. start a terminal in the template
-```
+```bash
 qvm-run nixos xterm
 ```
 
@@ -34,16 +34,30 @@ a fresh hvm template.
 2. create a new qube, select type "TemplateVM", template "(none)", name "nixos", networking "(none)", tick "Launch settings after creation", press "OK" button
 3. in the settings for the new qube, go to the advanced tab, change the kernel to "(provided by qube)" and virtualization mode to "HVM", press "Apply" button
 4. click the "boot qube from CD-ROM" button, click the "from file in qube" option and browse for the downloaded iso. press "OK" button, the qube will launch a boot console
+
+```bash
+vm=nixos
+qvm-create --class StandaloneVM --label red --property virt_mode=hvm $vm
+qvm-volume extend $vm:root 30G
+qvm-volume extend $vm:private 30G
+qvm-prefs $vm kernel '' # '' means "provided by qube"
+# download the lastest iso release: https://github.com/evq/qubes-nixos-template/releases/
+qvm-start --cdrom=<name-of-vm-with-iso>:/home/user/<name-of-iso> $vm
+```
 5. wait for about 15s then press enter to begin the install ( the boot console will say "Press Enter to continue" )
 6. the system will auto shutdown on successful install
 7. open the settings for the qube, go to the advanced tab, change the kernel to "default (...)" and virtualization mode to "default (PVH)"
-8. start the template and wait about 30s ( see qrexec notes. )
+```bash
+qvm-prefs $vm kernel $(qubes-prefs default_kernel) 
+qvm-prefs $vm virt_mode pvh
 ```
-qvm-start nixos
+8. start the template and wait about 30s ( see qrexec notes. )
+```bash
+qvm-start $vm
 ```
 9. start a terminal in the template
-```
-qvm-run nixos xterm
+```bash
+qvm-run $vm xterm
 ```
 
 ## issues with the qubes updates proxy

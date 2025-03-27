@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   fetchFromGitHub,
   makeWrapper,
   resholve,
@@ -14,7 +15,6 @@
   lsb-release,
   git,
   gnused,
-  mesa,
   pam,
   patch,
   pipewire,
@@ -49,11 +49,11 @@ resholve.mkDerivation rec {
   nativeBuildInputs =
     [
       autoPatchelfHook
+      pkgs.mesa
       makeWrapper
       pkg-config
       patch
       git
-      mesa # gbm
       automake
       autoconf
       libtool

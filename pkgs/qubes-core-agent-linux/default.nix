@@ -28,6 +28,7 @@
   nettools,
   ntp,
   pandoc,
+  pkgs,
   parted,
   pkg-config,
   procps,
@@ -91,6 +92,7 @@ in
     nativeBuildInputs =
       [
         bash
+        pkgs.mesa
         desktop-file-utils
         gobject-introspection
         lsb-release
