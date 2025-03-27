@@ -42,7 +42,6 @@
 
     buildInputs =
       [
-        mesa
         graphicsmagick
         icu
       ]

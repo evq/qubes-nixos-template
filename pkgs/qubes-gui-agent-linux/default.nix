@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   fetchFromGitHub,
   makeWrapper,
   resholve,
@@ -14,7 +15,6 @@
   lsb-release,
   git,
   gnused,
-  mesa,
   pam,
   patch,
   pipewire,
@@ -49,11 +49,11 @@ resholve.mkDerivation rec {
   nativeBuildInputs =
     [
       autoPatchelfHook
+      pkgs.mesa
       makeWrapper
       pkg-config
       patch
       git
-      mesa # gbm
       automake
       autoconf
       libtool
@@ -77,8 +77,8 @@ resholve.mkDerivation rec {
 
   buildInputs =
     [
-      mesa
       coreutils
+      pkgs.mesa
       qubes-core-vchan-xen
       qubes-core-qubesdb
       pam
@@ -197,6 +197,7 @@ resholve.mkDerivation rec {
         "${qubes-core-agent-linux}/lib/qubes"
         "${qubes-core-agent-linux}/lib/qubes/init/functions"
         bash
+        pkgs.mesa
         coreutils
         gnused
         qubes-core-qubesdb
