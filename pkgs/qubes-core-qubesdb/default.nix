@@ -32,6 +32,7 @@ in
     ];
 
     buildInputs = [
+      mesa
       glibc
       qubes-core-vchan-xen
       python3

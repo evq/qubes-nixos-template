@@ -112,6 +112,7 @@ in
 
     buildInputs =
       [
+        mesa
         coreutils
         dconf
         fakeroot

@@ -77,6 +77,7 @@ resholve.mkDerivation rec {
 
   buildInputs =
     [
+      mesa
       coreutils
       qubes-core-vchan-xen
       qubes-core-qubesdb

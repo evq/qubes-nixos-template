@@ -24,6 +24,7 @@ resholve.mkDerivation rec {
   };
 
   buildInputs = [
+    mesa
     qubes-core-qrexec
   ];
 

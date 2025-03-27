@@ -35,6 +35,7 @@ resholve.mkDerivation rec {
   ];
 
   buildInputs = [
+    mesa
     glibc
     qubes-core-vchan-xen
     python3
