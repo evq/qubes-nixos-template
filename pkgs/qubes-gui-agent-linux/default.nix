@@ -14,7 +14,7 @@
   lsb-release,
   git,
   gnused,
-  mesa,
+  libgbm,
   pam,
   patch,
   pipewire,
@@ -53,7 +53,7 @@ resholve.mkDerivation rec {
       pkg-config
       patch
       git
-      mesa # gbm
+      libgbm
       automake
       autoconf
       libtool
