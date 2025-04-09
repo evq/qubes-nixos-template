@@ -22,6 +22,7 @@
       qubes-gui-agent-linux = prev.callPackage ./pkgs/qubes-gui-agent-linux {};
       qubes-sshd = prev.callPackage ./pkgs/qubes-sshd {};
       qubes-usb-proxy = prev.callPackage ./pkgs/qubes-usb-proxy {};
+      qubes-gpg-split = prev.callPackage ./pkgs/qubes-gpg-split {};
     };
 
     pkgs = import nixpkgs {
