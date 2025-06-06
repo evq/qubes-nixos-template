@@ -6,6 +6,10 @@
 without gpg signature verification
 
 1. download the template rpm from github releases or build it yourself via `nix build .#rpm` ( preferred )
+If you build on Debian 12, make sure you have enough space in / (increase to 20GB) and use the following command:
+```
+$ sudo nix --extra-experimental-features nix-command --extra-experimental-features flakes  --option system-features "kvm benchmark big-parallel nixos-test" build .#rpm
+```
 2. copy the template rpm to dom0
 ```
 qvm-run --pass-io <YOUR_DOWNLOAD_VM> 'cat <FULL_RPM_PATH>' > qubes-template-nixos-4.2.0-unavailable.noarch.rpm

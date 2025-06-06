@@ -205,7 +205,7 @@ in
           esac; \
           ln -sf "/run/current-system/sw/share/''$i" $out/usr/share/qubes/xdg-override; \
         done < misc/data-dirs
-        rm $out/usr/share/applications/defaults.list
+        rm -f $out/usr/share/applications/defaults.list
 
         # install cron bindmount
         mkdir -p "$out/lib/qubes-bind-dirs.d"
