@@ -149,7 +149,9 @@ resholve.mkDerivation rec {
     # FIXME probably needs to be moved earlier in process
     substituteInPlace "$out/usr/bin/qubes-session" --replace '/usr/bin/qubes-session-autostart QUBES X-QUBES "X-$VMTYPE" "X-$UPDTYPE"' 'systemctl --user set-environment XDG_CURRENT_DESKTOP="QUBES:X-QUBES:X-$VMTYPE:X-$UPDTYPE"'
 
-    # FIXME glx is pulled in by default but there seems to be some weird race when attempting to load glamoregl before glx
+    # NOTE glx is pulled in by default but there seems to be some weird race when attempting to load glamoregl before glx
+    sed -i -e 's/Section "Module"/Section "Module"\n        Load "glx"/' "$out/etc/X11/xorg-qubes.conf.template"
+
     cat >> $out/etc/X11/xorg-qubes.conf.template <<EOF
     Section "Files"
       ModulePath "${xorg.xorgserver}/lib/xorg/modules"
