@@ -1,0 +1,49 @@
+diff --git a/nix_update/version/github.py b/nix_update/version/github.py
+index 75c70a3..88007ea 100644
+--- a/nix_update/version/github.py
++++ b/nix_update/version/github.py
+@@ -86,7 +86,9 @@ def fetch_github_versions(
+         return []
+     owner, repo = urlmatch.group("owner"), urlmatch.group("repo")
+     if extra_args is not None and extra_args.get("use_github_releases"):
+-        return fetch_github_versions_from_releases(url, owner, repo)
++        return fetch_github_versions_from_releases(
++            url, owner, repo
++        ) or fetch_github_versions_from_tags(url, owner, repo)
+     return fetch_github_versions_from_feed(url, owner, repo)
+ 
+ 
+@@ -117,6 +119,33 @@ def fetch_github_versions_from_releases(
+     return [Version(r["tag_name"], r["prerelease"]) for r in releases]
+ 
+ 
++def fetch_github_versions_from_tags(
++    url: ParseResult,
++    owner: str,
++    repo: str,
++) -> list[Version]:
++    github_url = f"https://api.github.com/repos/{owner}/{repo}/tags?per_page=100"
++    if url.netloc not in {"github.com", "api.github.com"}:
++        github_url = (
++            f"https://{url.netloc}/api/v3/repos/{owner}/{repo}/tags?per_page=100"
++        )
++
++    # TODO: pagination?
++    token = os.environ.get("GITHUB_TOKEN")
++    extra_headers = {} if token is None else {"Authorization": f"Bearer {token}"}
++
++    info(f"fetch {github_url}")
++    resp = _dorequest(url, github_url, extra_headers)
++    if resp is None:
++        return []
++    try:
++        releases = json.loads(resp)
++    except json.JSONDecodeError:
++        info("unable to parse github response, ignoring")
++        return []
++    return [Version(r["name"]) for r in releases]
++
++
+ def fetch_github_versions_from_feed(
+     url: ParseResult,
+     owner: str,

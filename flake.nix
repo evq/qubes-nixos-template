@@ -24,11 +24,20 @@
       qubes-usb-proxy = prev.callPackage ./pkgs/qubes-usb-proxy {};
       qubes-gpg-split = prev.callPackage ./pkgs/qubes-gpg-split {};
     };
+    patched-nix-update = final: prev: {
+      nix-update =
+        prev.nix-update
+        .overrideAttrs
+        (finalAttrs: previousAttrs: {
+          patches = [./pkgs/nix-update/0000-fetch-from-tags.patch];
+        });
+    };
 
     pkgs = import nixpkgs {
       inherit system;
       overlays = [
         qubesPackages
+        patched-nix-update
       ];
     };
   in rec {
@@ -87,5 +96,6 @@
       nixosConfig = nixosConfigurations.nixos;
     };
     iso = nixosConfigurations.iso.config.system.build.isoImage;
+    packages.x86_64-linux = pkgs;
   };
 }
