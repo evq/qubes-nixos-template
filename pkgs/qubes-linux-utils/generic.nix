@@ -67,6 +67,7 @@
           DESTDIR="$out" \
           LIBDIR=/lib \
           SYSLIBDIR=/lib \
+          BINDIR=/bin \
           SBINDIR=/bin \
           SCRIPTSDIR=/lib/qubes \
           INCLUDEDIR=/include
