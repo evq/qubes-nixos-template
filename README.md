@@ -100,4 +100,4 @@ Host github.com
 
 ### todo
 - deal with substituteInPlace deprecation
-- should be using 4.2.x package versions across the board, there's a couple 4.3.x packages atm
+- support both qubes 4.2 and 4.3 package sets
