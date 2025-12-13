@@ -31,7 +31,7 @@ in
           Group = "qubes";
           Type = "notify";
           ExecStartPre = "${init}/bin/qubes-db-init";
-          ExecStart = "${pkgs.qubes-core-qubesdb}/sbin/qubesdb-daemon 0";
+          ExecStart = "${pkgs.qubes-core-qubesdb}/bin/qubesdb-daemon 0";
         };
       };
     };
