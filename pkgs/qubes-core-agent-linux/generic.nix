@@ -75,6 +75,7 @@
       "lib/qubes/init/resize-rootfs-if-needed.sh"
       "lib/qubes/resize-rootfs"
       "lib/qubes/update-proxy-configs"
+      "bin/qvm-copy"
     ];
 in
   resholve.mkDerivation rec {
@@ -218,6 +219,7 @@ in
 
         # Fixup paths
         substituteInPlace "$out/bin/qubes-session-autostart" --replace "QUBES_XDG_CONFIG_DROPINS = '/etc/qubes/autostart'" "QUBES_XDG_CONFIG_DROPINS = \"$out/etc/qubes/autostart\""
+        substituteInPlace "$out/bin/qvm-copy" --replace "/usr/lib/qubes/qfile-agent" "$out/lib/qubes/qfile-agent"
 
         # use suid wrapper we will create in the module
         substituteInPlace "$out/etc/qubes-rpc/qubes.Filecopy" --replace "/usr/lib/qubes/qfile-unpacker" "/run/wrappers/bin/qfile-unpacker"
@@ -334,6 +336,8 @@ in
           "/usr/lib/qubes/init/bind-dirs.sh" = true;
           "/usr/lib/qubes/init/setup-rw.sh" = true;
           "/usr/lib/qubes/init/setup-rwdev.sh" = true;
+          "/usr/lib/qubes/qrexec-client-vm" = true;
+          "/usr/lib/qubes/qubes-fs-tree-check" = true;
           "/usr/lib/qubes/qubes-setup-dnat-to-ns" = true;
           "/usr/lib/qubes/qvm_nautilus_bookmark.sh" = true;
           "/usr/lib/qubes/resize-rootfs" = true;
@@ -394,6 +398,7 @@ in
             "cannot:bin/qubes-vmexec"
             "cannot:lib/qubes/init/bind-dirs.sh"
             "cannot:lib/qubes/qfile-unpacker"
+            "cannot:${qubes-core-qrexec}/bin/qrexec-client-vm"
           ]
           ++ lib.optional enableNetworking "cannot:${iproute2}/bin/ip";
       };
