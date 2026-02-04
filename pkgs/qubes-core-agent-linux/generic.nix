@@ -327,7 +327,7 @@ in
         interpreter = "none";
         fake.external =
           # guarded by check for /sys/fs/selinux
-          ["restorecon"]
+          ["chcon" "restorecon"]
           ++ lib.optional (!enableNetworking) "ip";
         fix = {
           "/bin/bash" = true;
