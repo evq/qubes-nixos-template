@@ -76,6 +76,11 @@
       "lib/qubes/resize-rootfs"
       "lib/qubes/update-proxy-configs"
       "bin/qvm-copy"
+      "bin/qvm-copy-to-vm"
+      "bin/qvm-move"
+      "bin/qvm-move-to-vm"
+      "bin/qvm-open-in-dvm"
+      "bin/qvm-run-vm"
     ];
 in
   resholve.mkDerivation rec {
@@ -219,7 +224,18 @@ in
 
         # Fixup paths
         substituteInPlace "$out/bin/qubes-session-autostart" --replace "QUBES_XDG_CONFIG_DROPINS = '/etc/qubes/autostart'" "QUBES_XDG_CONFIG_DROPINS = \"$out/etc/qubes/autostart\""
+
+        # we lied about qrexec-client-vm not execing :)
         substituteInPlace "$out/bin/qvm-copy" --replace "/usr/lib/qubes/qfile-agent" "$out/lib/qubes/qfile-agent"
+        substituteInPlace "$out/bin/qvm-copy-to-vm" --replace "/usr/lib/qubes/qfile-agent" "$out/lib/qubes/qfile-agent"
+        substituteInPlace "$out/bin/qvm-move" --replace "/usr/lib/qubes/qfile-agent" "$out/lib/qubes/qfile-agent"
+        substituteInPlace "$out/bin/qvm-move-to-vm" --replace "/usr/lib/qubes/qfile-agent" "$out/lib/qubes/qfile-agent"
+        substituteInPlace "$out/bin/qvm-open-in-dvm" --replace "/bin/sh -c" "${bash}/bin/sh -c"
+        substituteInPlace "$out/bin/qvm-open-in-dvm" --replace "/usr/lib/qubes/qopen-in-vm" "$out/lib/qubes/qopen-in-vm"
+        substituteInPlace "$out/bin/qvm-run-vm" --replace "/usr/lib/qubes/qrun-in-vm" "$out/lib/qubes/qrun-in-vm"
+
+        # first instance is an absolute path check, we could also just hardcode this to true
+        substituteInPlace "$out/bin/qvm-open-in-dvm" --replace "/usr/bin/zenity" "${zenity}/bin/zenity"
 
         # use suid wrapper we will create in the module
         substituteInPlace "$out/etc/qubes-rpc/qubes.Filecopy" --replace "/usr/lib/qubes/qfile-unpacker" "/run/wrappers/bin/qfile-unpacker"
@@ -328,6 +344,8 @@ in
         fake.external =
           # guarded by check for /sys/fs/selinux
           ["chcon" "restorecon"]
+          # guarded by check for
+          ++ ["kdialog"]
           ++ lib.optional (!enableNetworking) "ip";
         fix = {
           "/bin/bash" = true;
@@ -377,6 +395,7 @@ in
             systemd
             umount
             util-linux
+            zenity
           ]
           ++ lib.optional enableNetworking iproute2;
         keep = {
@@ -399,6 +418,7 @@ in
             "cannot:lib/qubes/init/bind-dirs.sh"
             "cannot:lib/qubes/qfile-unpacker"
             "cannot:${qubes-core-qrexec}/bin/qrexec-client-vm"
+            "cannot:${zenity}/bin/zenity"
           ]
           ++ lib.optional enableNetworking "cannot:${iproute2}/bin/ip";
       };
