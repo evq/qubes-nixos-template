@@ -6,6 +6,7 @@
   nixosConfig,
   qubesVersion,
   templateTimestamp ? "197001010000",
+  dist ? "nixos",
 }: let
   version = "4.0.6";
   toplevel = nixosConfig.config.system.build.toplevel;
@@ -78,13 +79,13 @@ in
     buildPhase = ''
       set -x
 
-      mkdir -p qubeized_images/nixos
-      ln -s ${rootImg} qubeized_images/nixos/root.img
+      mkdir -p qubeized_images/${dist}
+      ln -s ${rootImg} qubeized_images/${dist}/root.img
 
       ln -s "appmenus_generic" appmenus
       cp template_generic.conf template.conf
 
-      echo ${templateTimestamp} > build_timestamp_nixos
+      echo ${templateTimestamp} > build_timestamp_${dist}
       echo ${qubesVersion} > version
 
       substituteInPlace templates.spec --replace qubeized_images "$(pwd)/qubeized_images"
@@ -96,7 +97,7 @@ in
       substituteInPlace build_template_rpm --replace "rpmbuild --define" \
         "rpmbuild --define 'use_source_date_epoch_as_buildtime 1' --define"
 
-      DIST=nixos ./build_template_rpm nixos
+      DIST=${dist} ./build_template_rpm ${dist}
     '';
 
     installPhase = ''
