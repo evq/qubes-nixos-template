@@ -94,6 +94,7 @@
       inherit nixpkgs;
       qubesVersion = "4.2.0";
       nixosConfig = nixosConfigurations.nixos;
+      templateTimestamp = builtins.substring 0 12 self.lastModifiedDate;
     };
     iso = nixosConfigurations.iso.config.system.build.isoImage;
     packages.x86_64-linux = pkgs;
