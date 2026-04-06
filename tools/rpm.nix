@@ -7,6 +7,7 @@
   qubesVersion,
   templateTimestamp ? "197001010000",
   dist ? "nixos",
+  rootSize ? "10G",
 }: let
   version = "4.0.6";
   toplevel = nixosConfig.config.system.build.toplevel;
@@ -53,7 +54,7 @@
     '';
   }).overrideAttrs (prev: {
     buildCommand = prev.buildCommand + ''
-      truncate -s 10G $img
+      truncate -s ${rootSize} $img
     '';
   });
 in
@@ -91,6 +92,10 @@ in
       substituteInPlace templates.spec --replace qubeized_images "$(pwd)/qubeized_images"
       substituteInPlace templates.spec --replace " appmenus" " $(pwd)/appmenus"
       substituteInPlace templates.spec --replace " template.conf" " $(pwd)/template.conf"
+
+      # https://fedoraproject.org/wiki/Changes/Switch_RPMs_to_zstd_compression
+      # Exchanging a bit of compression for speed
+      substituteInPlace build_template_rpm --replace "w2.xzdio" "w10.zstdio"
 
       substituteInPlace build_template_rpm --replace "rpmbuild --target" \
         "rpmbuild --define 'build_mtime_policy clamp_to_source_date_epoch' --target"
