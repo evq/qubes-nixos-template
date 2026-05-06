@@ -8,13 +8,13 @@
 }:
 resholve.mkDerivation rec {
   pname = "qubes-gpg-split";
-  version = "2.0.83";
+  version = "2.0.84";
 
   src = fetchFromGitHub {
     owner = "QubesOS";
     repo = "qubes-app-linux-split-gpg";
     rev = "v${version}";
-    hash = "sha256-h9fgG6+ic3vlBJOiYJX65NFS61W4aTQZl4tvmrLyCoU=";
+    hash = "sha256-iM0SqA1Dy5yK3GRNaR/nxkMCifrNNBu5EaVVca42XZU=";
   };
 
   postPatch = ''
